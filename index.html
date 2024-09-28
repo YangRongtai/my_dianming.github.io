@@ -1,18 +1,123 @@
 <!DOCTYPE html>  
-<html>  
+<html lang="zh-CN">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>化学课 随机点名工具</title>  
+    <style>  
+        body {  
+            font-family: 'Helvetica Neue', Arial, sans-serif;  
+            background: linear-gradient(to bottom right, #b2ebf2, #81d4fa);  /* 使用蓝绿色渐变背景 */  
+            color: #37474f;  
+            text-align: center;  
+            padding: 20px;  
+        }  
+        h1 {  
+            color: #1b5e20;  
+            text-shadow: 1px 1px 2px #fff;  
+            font-size: 3em; /* 增大标题字体 */  
+            margin-bottom: 20px;  
+        }  
+        #nameList {  
+            display: none; /* 隐藏原始名单 */  
+        }  
+        #result {  
+            font-size: 36px;  /* 加大结果字体 */  
+            font-weight: bold; /* 增加粗体效果 */  
+            margin: 20px 0;  
+            padding: 15px;  
+            border: 3px solid #1b5e20;  
+            border-radius: 10px;  
+            background-color: rgba(255, 255, 255, 0.9);  
+            display: inline-block; /* 使结果框自适应内容 */  
+        }  
+        #scrollingNames {  
+            font-size: 24px;  
+            height: 50px; /* 设置高度以便于显示 */  
+            line-height: 50px; /* 设置行高使内容垂直居中 */  
+            overflow: hidden; /* 隐藏多余部分 */  
+            margin: 20px 0;  
+        }  
+        #namesDisplay {  
+            display: inline-block; /* 使名字滚动区域自适应 */  
+            transition: transform 0.05s linear;  
+        }  
+        button {  
+            padding: 15px 30px;  
+            font-size: 20px;  
+            font-weight: bold;  
+            color: #fff;  
+            background-color: #1b5e20;  
+            border: none;  
+            border-radius: 5px;  
+            cursor: pointer;  
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);  
+            transition: transform 0.2s, background-color 0.3s;  
+        }  
+        button:hover {  
+            background-color: #388e3c;  
+            transform: scale(1.05);  
+        }  
+    </style>  
+</head>  
 <body>  
-    <h2>随机点名</h2>  
-    <input type="text" id="names" placeholder="输入姓名，用逗号分隔">  
-    <button onclick="pickRandomName()">随机点名</button>  
-    <p id="result"></p>  
+
+    <h1>🔬 化学课 随机点名工具 🔬</h1>  
+    <p>准备好开始实验了吗？点击下面的按钮开始滚动名字，直到你想停止：</p>  
+    
+    <div id="scrollingNames">  
+        <div id="namesDisplay"></div>  
+    </div>  
+
+    <button onclick="startScrolling()">🔄 开始滚动 🔄</button>  
+    <button onclick="stopScrolling()">✋ 停止点名 ✋</button>  
+    
+    <div id="result"></div>  
+
+    <div id="nameList">  
+        <!-- 学生名单 -->  
+        周梓晟, 普韩霖, 赵瑞, 王昱杰, 郭浩源, 胡哲闻, 阮名扬, 吴妮,  
+        梁雨禾, 王睿, 薛皓天, 杨璨宇, 缪咏航, 郑航, 郑岚月, 马湘媛,  
+        何玉娴, 王玮琪, 廖晋, 董泽臻, 李铭, 孔召文, 蔡美曦, 杨惟雅,  
+        陶梦燃, 孙一兮, 邱丽芳, 杨欣如, 徐琛洋, 王诗政, 鲁嘉怡, 宋雨蒙,  
+        杨家豪, 刘鉴辉, 杨世安, 戴铭君, 赵伯润, 周永镜琨, 杨斯齐, 张筱,  
+        史仲易, 周建旭, 彭一城, 杨闻睿, 黄昱程, 马楚畅, 赵欣玥, 黎珉妤,  
+        沈海洋, 李博浩, 陈博睿, 刘恩豪, 宴梓豪, 宋韵闻, 陈诺, 周晓妍  
+    </div>  
 
     <script>  
-        function pickRandomName() {  
-            const names = document.getElementById('names').value.split(',');  
-            const randomIndex = Math.floor(Math.random() * names.length);  
-            const randomName = names[randomIndex].trim();  
-            document.getElementById('result').innerText = '被点到的人是: ' + randomName;  
+        let scrolling; // 用于存储滚动的定时器  
+        const names = document.getElementById('nameList').innerText.split(',').map(name => name.trim());  
+        const namesDisplay = document.getElementById('namesDisplay');  
+        let currentIndex = 0;  
+
+        function startScrolling() {  
+            if (scrolling) return; // 如果已经在滚动，不再开始  
+            scrolling = setInterval(() => {  
+                namesDisplay.innerText = names[currentIndex];  
+                currentIndex = (currentIndex + 1) % names.length; // 循环显示名字  
+            }, 100); // 每 100 毫秒更新一次  
+        }  
+
+        function stopScrolling() {  
+            if (!scrolling) return; // 如果没有在滚动，不执行停止  
+            clearInterval(scrolling);  
+            scrolling = null;  
+            const selectedIndex = Math.floor(Math.random() * names.length); // 随机选择一个名字  
+            const selectedName = names[selectedIndex];  
+
+            const resultDiv = document.getElementById('result');  
+            resultDiv.innerText = '🎊 被点到的人是: ' + selectedName + ' 🎊';  
+            resultDiv.style.transform = 'scale(1.1)'; // 添加放大动效  
+            resultDiv.style.backgroundColor = 'rgba(200, 255, 200, 0.9)'; // 突出背景色  
+
+            // 短暂放大后恢复原样  
+            setTimeout(() => {  
+                resultDiv.style.transform = 'scale(1)';  
+                resultDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'; // 恢复背景色  
+            }, 300);  
         }  
     </script>  
+
 </body>  
 </html>
