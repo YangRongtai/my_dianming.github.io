@@ -1,1 +1,18 @@
+<!DOCTYPE html>  
+<html>  
+<body>  
+    <h2>随机点名</h2>  
+    <input type="text" id="names" placeholder="输入姓名，用逗号分隔">  
+    <button onclick="pickRandomName()">随机点名</button>  
+    <p id="result"></p>  
 
+    <script>  
+        function pickRandomName() {  
+            const names = document.getElementById('names').value.split(',');  
+            const randomIndex = Math.floor(Math.random() * names.length);  
+            const randomName = names[randomIndex].trim();  
+            document.getElementById('result').innerText = '被点到的人是: ' + randomName;  
+        }  
+    </script>  
+</body>  
+</html>
